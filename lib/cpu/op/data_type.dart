@@ -1,5 +1,5 @@
 enum DataType {
-  D8,
-  D16,
-  R8,
+  d8,
+  d16,
+  r8,
 }

@@ -20,7 +20,7 @@ enum _State {
 }
 
 class Fetcher {
-  static final List<int> EMPTY_PIXEL_LINE = [0, 0, 0, 0, 0, 0, 0, 0];
+  static final List<int> emptyPixelLine = [0, 0, 0, 0, 0, 0, 0, 0];
 
   Fetcher(
     this._fifo,
@@ -127,7 +127,7 @@ class Fetcher {
   void tick() {
     if (_fetchingDisabled && state == _State.READ_TILE_ID) {
       if (_fifo.getLength() <= 8) {
-        _fifo.enqueue8Pixels(EMPTY_PIXEL_LINE, _tileAttributes);
+        _fifo.enqueue8Pixels(emptyPixelLine, _tileAttributes);
       }
       return;
     }

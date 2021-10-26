@@ -52,7 +52,7 @@ class AluFunctions {
   }
 
   AluFunctions() {
-    registerIntAluFunction("INC", DataType.D8, (flags, arg) {
+    registerIntAluFunction("INC", DataType.d8, (flags, arg) {
       int result = (arg + 1) & 0xff;
       flags.setZ(result == 0);
       flags.setN(false);
@@ -60,8 +60,8 @@ class AluFunctions {
       return result;
     });
     registerIntAluFunction(
-        "INC", DataType.D16, (flags, arg) => (arg + 1) & 0xffff);
-    registerIntAluFunction("DEC", DataType.D8, (flags, arg) {
+        "INC", DataType.d16, (flags, arg) => (arg + 1) & 0xffff);
+    registerIntAluFunction("DEC", DataType.d8, (flags, arg) {
       int result = (arg - 1) & 0xff;
       flags.setZ(result == 0);
       flags.setN(true);
@@ -69,17 +69,17 @@ class AluFunctions {
       return result;
     });
     registerIntAluFunction(
-        "DEC", DataType.D16, (flags, arg) => (arg - 1) & 0xffff);
-    registerBiAluFunction("ADD", DataType.D16, DataType.D16,
+        "DEC", DataType.d16, (flags, arg) => (arg - 1) & 0xffff);
+    registerBiAluFunction("ADD", DataType.d16, DataType.d16,
         (flags, arg1, arg2) {
       flags.setN(false);
       flags.setH((arg1 & 0x0fff) + (arg2 & 0x0fff) > 0x0fff);
       flags.setC(arg1 + arg2 > 0xffff);
       return (arg1 + arg2) & 0xffff;
     });
-    registerBiAluFunction("ADD", DataType.D16, DataType.R8,
+    registerBiAluFunction("ADD", DataType.d16, DataType.r8,
         (flags, arg1, arg2) => (arg1 + arg2) & 0xffff);
-    registerBiAluFunction("ADD_SP", DataType.D16, DataType.R8,
+    registerBiAluFunction("ADD_SP", DataType.d16, DataType.r8,
         (flags, arg1, arg2) {
       flags.setZ(false);
       flags.setN(false);
@@ -89,7 +89,7 @@ class AluFunctions {
       flags.setH((((arg1 & 0x0f) + (arg2 & 0x0f)) & 0x10) != 0);
       return result & 0xffff;
     });
-    registerIntAluFunction("DAA", DataType.D8, (flags, arg) {
+    registerIntAluFunction("DAA", DataType.d8, (flags, arg) {
       int result = arg;
       if (flags.isN()) {
         if (flags.isH()) {
@@ -114,24 +114,24 @@ class AluFunctions {
       flags.setZ(result == 0);
       return result;
     });
-    registerIntAluFunction("CPL", DataType.D8, (flags, arg) {
+    registerIntAluFunction("CPL", DataType.d8, (flags, arg) {
       flags.setN(true);
       flags.setH(true);
       return (~arg) & 0xff;
     });
-    registerIntAluFunction("SCF", DataType.D8, (flags, arg) {
+    registerIntAluFunction("SCF", DataType.d8, (flags, arg) {
       flags.setN(false);
       flags.setH(false);
       flags.setC(true);
       return arg;
     });
-    registerIntAluFunction("CCF", DataType.D8, (flags, arg) {
+    registerIntAluFunction("CCF", DataType.d8, (flags, arg) {
       flags.setN(false);
       flags.setH(false);
       flags.setC(!flags.isC());
       return arg;
     });
-    registerBiAluFunction("ADD", DataType.D8, DataType.D8,
+    registerBiAluFunction("ADD", DataType.d8, DataType.d8,
         (flags, byte1, byte2) {
       flags.setZ(((byte1 + byte2) & 0xff) == 0);
       flags.setN(false);
@@ -139,7 +139,7 @@ class AluFunctions {
       flags.setC(byte1 + byte2 > 0xff);
       return (byte1 + byte2) & 0xff;
     });
-    registerBiAluFunction("ADC", DataType.D8, DataType.D8,
+    registerBiAluFunction("ADC", DataType.d8, DataType.d8,
         (flags, byte1, byte2) {
       int carry = flags.isC() ? 1 : 0;
       flags.setZ(((byte1 + byte2 + carry) & 0xff) == 0);
@@ -148,7 +148,7 @@ class AluFunctions {
       flags.setC(byte1 + byte2 + carry > 0xff);
       return (byte1 + byte2 + carry) & 0xff;
     });
-    registerBiAluFunction("SUB", DataType.D8, DataType.D8,
+    registerBiAluFunction("SUB", DataType.d8, DataType.d8,
         (flags, byte1, byte2) {
       flags.setZ(((byte1 - byte2) & 0xff) == 0);
       flags.setN(true);
@@ -156,7 +156,7 @@ class AluFunctions {
       flags.setC(byte2 > byte1);
       return (byte1 - byte2) & 0xff;
     });
-    registerBiAluFunction("SBC", DataType.D8, DataType.D8,
+    registerBiAluFunction("SBC", DataType.d8, DataType.d8,
         (flags, byte1, byte2) {
       int carry = flags.isC() ? 1 : 0;
       int res = byte1 - byte2 - carry;
@@ -167,7 +167,7 @@ class AluFunctions {
       flags.setC(res < 0);
       return res & 0xff;
     });
-    registerBiAluFunction("AND", DataType.D8, DataType.D8,
+    registerBiAluFunction("AND", DataType.d8, DataType.d8,
         (flags, byte1, byte2) {
       int result = byte1 & byte2;
       flags.setZ(result == 0);
@@ -176,7 +176,7 @@ class AluFunctions {
       flags.setC(false);
       return result;
     });
-    registerBiAluFunction("OR", DataType.D8, DataType.D8,
+    registerBiAluFunction("OR", DataType.d8, DataType.d8,
         (flags, byte1, byte2) {
       int result = byte1 | byte2;
       flags.setZ(result == 0);
@@ -185,7 +185,7 @@ class AluFunctions {
       flags.setC(false);
       return result;
     });
-    registerBiAluFunction("XOR", DataType.D8, DataType.D8,
+    registerBiAluFunction("XOR", DataType.d8, DataType.d8,
         (flags, byte1, byte2) {
       int result = (byte1 ^ byte2) & 0xff;
       flags.setZ(result == 0);
@@ -194,7 +194,7 @@ class AluFunctions {
       flags.setC(false);
       return result;
     });
-    registerBiAluFunction("CP", DataType.D8, DataType.D8,
+    registerBiAluFunction("CP", DataType.d8, DataType.d8,
         (flags, byte1, byte2) {
       flags.setZ(((byte1 - byte2) & 0xff) == 0);
       flags.setN(true);
@@ -202,7 +202,7 @@ class AluFunctions {
       flags.setC(byte2 > byte1);
       return byte1;
     });
-    registerIntAluFunction("RLC", DataType.D8, (flags, arg) {
+    registerIntAluFunction("RLC", DataType.d8, (flags, arg) {
       int result = (arg << 1) & 0xff;
       if ((arg & (1 << 7)) != 0) {
         result |= 1;
@@ -215,7 +215,7 @@ class AluFunctions {
       flags.setH(false);
       return result;
     });
-    registerIntAluFunction("RRC", DataType.D8, (flags, arg) {
+    registerIntAluFunction("RRC", DataType.d8, (flags, arg) {
       int result = arg >> 1;
       if ((arg & 1) == 1) {
         result |= (1 << 7);
@@ -228,7 +228,7 @@ class AluFunctions {
       flags.setH(false);
       return result;
     });
-    registerIntAluFunction("RL", DataType.D8, (flags, arg) {
+    registerIntAluFunction("RL", DataType.d8, (flags, arg) {
       int result = (arg << 1) & 0xff;
       result |= flags.isC() ? 1 : 0;
       flags.setC((arg & (1 << 7)) != 0);
@@ -237,7 +237,7 @@ class AluFunctions {
       flags.setH(false);
       return result;
     });
-    registerIntAluFunction("RR", DataType.D8, (flags, arg) {
+    registerIntAluFunction("RR", DataType.d8, (flags, arg) {
       int result = arg >> 1;
       result |= flags.isC() ? (1 << 7) : 0;
       flags.setC((arg & 1) != 0);
@@ -246,7 +246,7 @@ class AluFunctions {
       flags.setH(false);
       return result;
     });
-    registerIntAluFunction("SLA", DataType.D8, (flags, arg) {
+    registerIntAluFunction("SLA", DataType.d8, (flags, arg) {
       int result = (arg << 1) & 0xff;
       flags.setC((arg & (1 << 7)) != 0);
       flags.setZ(result == 0);
@@ -254,7 +254,7 @@ class AluFunctions {
       flags.setH(false);
       return result;
     });
-    registerIntAluFunction("SRA", DataType.D8, (flags, arg) {
+    registerIntAluFunction("SRA", DataType.d8, (flags, arg) {
       int result = (arg >> 1) | (arg & (1 << 7));
       flags.setC((arg & 1) != 0);
       flags.setZ(result == 0);
@@ -262,7 +262,7 @@ class AluFunctions {
       flags.setH(false);
       return result;
     });
-    registerIntAluFunction("SWAP", DataType.D8, (flags, arg) {
+    registerIntAluFunction("SWAP", DataType.d8, (flags, arg) {
       int upper = arg & 0xf0;
       int lower = arg & 0x0f;
       int result = (lower << 4) | (upper >> 4);
@@ -272,7 +272,7 @@ class AluFunctions {
       flags.setC(false);
       return result;
     });
-    registerIntAluFunction("SRL", DataType.D8, (flags, arg) {
+    registerIntAluFunction("SRL", DataType.d8, (flags, arg) {
       int result = (arg >> 1);
       flags.setC((arg & 1) != 0);
       flags.setZ(result == 0);
@@ -280,7 +280,7 @@ class AluFunctions {
       flags.setH(false);
       return result;
     });
-    registerBiAluFunction("BIT", DataType.D8, DataType.D8, (flags, arg1, arg2) {
+    registerBiAluFunction("BIT", DataType.d8, DataType.d8, (flags, arg1, arg2) {
       int bit = arg2;
       flags.setN(false);
       flags.setH(true);
@@ -289,9 +289,9 @@ class AluFunctions {
       }
       return arg1;
     });
-    registerBiAluFunction("RES", DataType.D8, DataType.D8,
+    registerBiAluFunction("RES", DataType.d8, DataType.d8,
         (flags, arg1, arg2) => clearBit(arg1, arg2));
-    registerBiAluFunction("SET", DataType.D8, DataType.D8,
+    registerBiAluFunction("SET", DataType.d8, DataType.d8,
         (flags, arg1, arg2) => setBit(arg1, arg2));
   }
 }

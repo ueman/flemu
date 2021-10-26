@@ -10,9 +10,9 @@ import 'package:gb_emulator/int_x.dart';
 class OpcodeBuilder {
   static final AluFunctions ALU = AluFunctions();
 
-  static final Set<IntRegistryFunction> OEM_BUG = {
-    ALU.findIntAluFunction("INC", DataType.D16)!,
-    ALU.findIntAluFunction("DEC", DataType.D16)!,
+  static final Set<IntRegistryFunction> oemBug = {
+    ALU.findIntAluFunction("INC", DataType.d16)!,
+    ALU.findIntAluFunction("DEC", DataType.d16)!,
   };
 
   final int opcode;
@@ -41,7 +41,7 @@ class OpcodeBuilder {
             return arg.read(registers, addressSpace, args);
           },
           description: () {
-            if (arg.dataType == DataType.D16) {
+            if (arg.dataType == DataType.d16) {
               return "${arg.label} → [__]";
             } else {
               return "${arg.label} → [_]";
@@ -51,7 +51,7 @@ class OpcodeBuilder {
   }
 
   void loadWord(int value) {
-    lastDataType = DataType.D16;
+    lastDataType = DataType.d16;
     ops.add(
       Op(
         execute: (registers, addressSpace, args, int context) {
@@ -64,7 +64,7 @@ class OpcodeBuilder {
 
   void store(String target) {
     Argument arg = Argument.parse(target);
-    if (lastDataType == DataType.D16 && arg == Argument.parse('(a16)')) {
+    if (lastDataType == DataType.d16 && arg == Argument.parse('(a16)')) {
       ops.add(Op(
         writesMemory: arg.memory,
         operandLength: arg.operandLength,
@@ -93,7 +93,7 @@ class OpcodeBuilder {
           return context;
         },
         description: () {
-          if (arg.dataType == DataType.D16) {
+          if (arg.dataType == DataType.d16) {
             return "[__] → ${arg.label}";
           } else {
             return "[_] → ${arg.label}";
@@ -128,7 +128,7 @@ class OpcodeBuilder {
   }
 
   void push() {
-    final dec = ALU.findIntAluFunction("DEC", DataType.D16)!;
+    final dec = ALU.findIntAluFunction("DEC", DataType.d16)!;
     ops.add(Op(
       writesMemory: true,
       execute: (registers, addressSpace, args, int context) {
@@ -156,9 +156,9 @@ class OpcodeBuilder {
   }
 
   void pop() {
-    final inc = ALU.findIntAluFunction("INC", DataType.D16)!;
+    final inc = ALU.findIntAluFunction("INC", DataType.d16)!;
 
-    lastDataType = DataType.D16;
+    lastDataType = DataType.d16;
     ops.add(Op(
       readsMemory: true,
       execute: (registers, addressSpace, args, int context) {
@@ -196,14 +196,14 @@ class OpcodeBuilder {
         return func!(registers.flags, v1, v2);
       },
       description: () {
-        if (lastDataType == DataType.D16) {
+        if (lastDataType == DataType.d16) {
           return "$operation([__],$arg2) → [__]";
         } else {
           return "$operation([_],$arg2) → [_]";
         }
       }(),
     ));
-    if (lastDataType == DataType.D16) {
+    if (lastDataType == DataType.d16) {
       extraCycle();
     }
   }
@@ -216,14 +216,14 @@ class OpcodeBuilder {
   }
 
   void aluDouble(String operation, int d8Value) {
-    final func = ALU.findBiAluFunction(operation, lastDataType!, DataType.D8);
+    final func = ALU.findBiAluFunction(operation, lastDataType!, DataType.d8);
     ops.add(Op(
       execute: (registers, addressSpace, args, int v1) {
         return func!(registers.flags, v1, d8Value);
       },
       description: "$operation($d8Value,[_]) → [_]",
     ));
-    if (lastDataType == DataType.D16) {
+    if (lastDataType == DataType.d16) {
       extraCycle();
     }
   }
@@ -240,21 +240,21 @@ class OpcodeBuilder {
             : null;
       },
       description: () {
-        if (lastDataType == DataType.D16) {
+        if (lastDataType == DataType.d16) {
           return "$operation([__]) → [__]";
         } else {
           return "$operation([_]) → [_]";
         }
       }(),
     ));
-    if (lastDataType == DataType.D16) {
+    if (lastDataType == DataType.d16) {
       extraCycle();
     }
   }
 
   void aluHL(String operation) {
     load("HL");
-    final func = ALU.findIntAluFunction(operation, DataType.D16)!;
+    final func = ALU.findIntAluFunction(operation, DataType.d16)!;
     ops.add(Op(
       execute: (registers, addressSpace, args, int value) {
         return func(registers.flags, value);
@@ -333,7 +333,7 @@ class OpcodeBuilder {
   String toString() => label;
 
   static bool causesOemBug(IntRegistryFunction function, int context) {
-    return OEM_BUG.contains(function) && inOamArea(context);
+    return oemBug.contains(function) && inOamArea(context);
   }
 
   static bool inOamArea(int address) {

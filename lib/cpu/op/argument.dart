@@ -116,7 +116,7 @@ class _L extends Argument {
 }
 
 class _AF extends Argument {
-  _AF() : super.withArgs(0, false, DataType.D16);
+  _AF() : super.withArgs(0, false, DataType.d16);
 
   @override
   int read(Registers registers, AddressSpace addressSpace, List<int> args) {
@@ -134,7 +134,7 @@ class _AF extends Argument {
 }
 
 class _BC extends Argument {
-  _BC() : super.withArgs(0, false, DataType.D16);
+  _BC() : super.withArgs(0, false, DataType.d16);
 
   @override
   int read(Registers registers, AddressSpace addressSpace, List<int> args) {
@@ -152,7 +152,7 @@ class _BC extends Argument {
 }
 
 class _DE extends Argument {
-  _DE() : super.withArgs(0, false, DataType.D16);
+  _DE() : super.withArgs(0, false, DataType.d16);
 
   @override
   int read(Registers registers, AddressSpace addressSpace, List<int> args) {
@@ -170,7 +170,7 @@ class _DE extends Argument {
 }
 
 class _HL extends Argument {
-  _HL() : super.withArgs(0, false, DataType.D16);
+  _HL() : super.withArgs(0, false, DataType.d16);
 
   @override
   int read(Registers registers, AddressSpace addressSpace, List<int> args) {
@@ -188,7 +188,7 @@ class _HL extends Argument {
 }
 
 class _SP extends Argument {
-  _SP() : super.withArgs(0, false, DataType.D16);
+  _SP() : super.withArgs(0, false, DataType.d16);
 
   @override
   int read(Registers registers, AddressSpace addressSpace, List<int> args) {
@@ -206,7 +206,7 @@ class _SP extends Argument {
 }
 
 class _PC extends Argument {
-  _PC() : super.withArgs(0, false, DataType.D16);
+  _PC() : super.withArgs(0, false, DataType.d16);
 
   @override
   int read(Registers registers, AddressSpace addressSpace, List<int> args) {
@@ -224,7 +224,7 @@ class _PC extends Argument {
 }
 
 class _D8 extends Argument {
-  _D8() : super.withArgs(1, false, DataType.D8);
+  _D8() : super.withArgs(1, false, DataType.d8);
 
   @override
   int read(Registers registers, AddressSpace addressSpace, List<int> args) {
@@ -242,7 +242,7 @@ class _D8 extends Argument {
 }
 
 class _D16 extends Argument {
-  _D16() : super.withArgs(2, false, DataType.D16);
+  _D16() : super.withArgs(2, false, DataType.d16);
 
   @override
   int read(Registers registers, AddressSpace addressSpace, List<int> args) {
@@ -260,7 +260,7 @@ class _D16 extends Argument {
 }
 
 class _R8 extends Argument {
-  _R8() : super.withArgs(1, false, DataType.R8);
+  _R8() : super.withArgs(1, false, DataType.r8);
 
   @override
   int read(Registers registers, AddressSpace addressSpace, List<int> args) {
@@ -278,7 +278,7 @@ class _R8 extends Argument {
 }
 
 class _A16 extends Argument {
-  _A16() : super.withArgs(2, false, DataType.D16);
+  _A16() : super.withArgs(2, false, DataType.d16);
 
   @override
   int read(Registers registers, AddressSpace addressSpace, List<int> args) {
@@ -296,7 +296,7 @@ class _A16 extends Argument {
 }
 
 class __BC extends Argument {
-  __BC() : super.withArgs(0, true, DataType.D8);
+  __BC() : super.withArgs(0, true, DataType.d8);
 
   @override
   int read(Registers registers, AddressSpace addressSpace, List<int> args) {
@@ -314,7 +314,7 @@ class __BC extends Argument {
 }
 
 class __DE extends Argument {
-  __DE() : super.withArgs(0, true, DataType.D8);
+  __DE() : super.withArgs(0, true, DataType.d8);
 
   @override
   int read(Registers registers, AddressSpace addressSpace, List<int> args) {
@@ -332,7 +332,7 @@ class __DE extends Argument {
 }
 
 class __HL extends Argument {
-  __HL() : super.withArgs(0, true, DataType.D8);
+  __HL() : super.withArgs(0, true, DataType.d8);
 
   @override
   int read(Registers registers, AddressSpace addressSpace, List<int> args) {
@@ -350,7 +350,7 @@ class __HL extends Argument {
 }
 
 class __A8 extends Argument {
-  __A8() : super.withArgs(1, true, DataType.D8);
+  __A8() : super.withArgs(1, true, DataType.d8);
 
   @override
   int read(Registers registers, AddressSpace addressSpace, List<int> args) {
@@ -368,7 +368,7 @@ class __A8 extends Argument {
 }
 
 class __A16 extends Argument {
-  __A16() : super.withArgs(2, true, DataType.D8);
+  __A16() : super.withArgs(2, true, DataType.d8);
 
   @override
   int read(Registers registers, AddressSpace addressSpace, List<int> args) {
@@ -386,7 +386,7 @@ class __A16 extends Argument {
 }
 
 class __C extends Argument {
-  __C() : super.withArgs(0, true, DataType.D8);
+  __C() : super.withArgs(0, true, DataType.d8);
 
   @override
   int read(Registers registers, AddressSpace addressSpace, List<int> args) {
@@ -415,7 +415,7 @@ abstract class Argument {
   Argument()
       : operandLength = 0,
         memory = false,
-        dataType = DataType.D8;
+        dataType = DataType.d8;
 
   Argument.withArgs(this.operandLength, this.memory, this.dataType);
 

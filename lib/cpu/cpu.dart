@@ -12,17 +12,17 @@ import 'package:gb_emulator/gpu/sprite_bug.dart';
 import 'package:gb_emulator/int_x.dart';
 
 enum CpuState {
-  OPCODE,
-  EXT_OPCODE,
-  OPERAND,
-  RUNNING,
-  IRQ_READ_IF,
-  IRQ_READ_IE,
-  IRQ_PUSH_1,
-  IRQ_PUSH_2,
-  IRQ_JUMP,
-  STOPPED,
-  HALTED,
+  opcode,
+  extOpcode,
+  operand,
+  running,
+  irqReadIf,
+  irqReadIe,
+  irqPush1,
+  irqPush2,
+  irqJump,
+  stopped,
+  halted,
 }
 
 class Cpu {
@@ -51,7 +51,7 @@ class Cpu {
 
   int _opIndex = 0;
 
-  CpuState _state = CpuState.OPCODE;
+  CpuState _state = CpuState.opcode;
 
   int _opContext = 0;
 
@@ -80,32 +80,32 @@ class Cpu {
       return;
     }
 
-    if (_state == CpuState.OPCODE ||
-        _state == CpuState.HALTED ||
-        _state == CpuState.STOPPED) {
+    if (_state == CpuState.opcode ||
+        _state == CpuState.halted ||
+        _state == CpuState.stopped) {
       if (_interruptManager.isIme() &&
           _interruptManager.isInterruptRequested()) {
-        if (_state == CpuState.STOPPED) {
+        if (_state == CpuState.stopped) {
           _display.enableLcd();
         }
-        _state = CpuState.IRQ_READ_IF;
+        _state = CpuState.irqReadIf;
       }
     }
 
-    if (_state == CpuState.IRQ_READ_IF ||
-        _state == CpuState.IRQ_READ_IE ||
-        _state == CpuState.IRQ_PUSH_1 ||
-        _state == CpuState.IRQ_PUSH_2 ||
-        _state == CpuState.IRQ_JUMP) {
+    if (_state == CpuState.irqReadIf ||
+        _state == CpuState.irqReadIe ||
+        _state == CpuState.irqPush1 ||
+        _state == CpuState.irqPush2 ||
+        _state == CpuState.irqJump) {
       _handleInterrupt();
       return;
     }
 
-    if (_state == CpuState.HALTED && _interruptManager.isInterruptRequested()) {
-      _state = CpuState.OPCODE;
+    if (_state == CpuState.halted && _interruptManager.isInterruptRequested()) {
+      _state = CpuState.opcode;
     }
 
-    if (_state == CpuState.HALTED || _state == CpuState.STOPPED) {
+    if (_state == CpuState.halted || _state == CpuState.stopped) {
       return;
     }
 
@@ -113,18 +113,18 @@ class Cpu {
     while (true) {
       int pc = _registers.pc;
       switch (_state) {
-        case CpuState.OPCODE:
+        case CpuState.opcode:
           clearState();
           _opcode1 = _addressSpace.getByte(pc);
           accessedMemory = true;
           if (_opcode1 == 0xcb) {
-            _state = CpuState.EXT_OPCODE;
+            _state = CpuState.extOpcode;
           } else if (_opcode1 == 0x10) {
-            _currentOpcode = opcodes.COMMANDS[_opcode1];
-            _state = CpuState.EXT_OPCODE;
+            _currentOpcode = opcodes.commands[_opcode1];
+            _state = CpuState.extOpcode;
           } else {
-            _state = CpuState.OPERAND;
-            _currentOpcode = opcodes.COMMANDS[_opcode1];
+            _state = CpuState.operand;
+            _currentOpcode = opcodes.commands[_opcode1];
             if (_currentOpcode == null) {
               throw Exception("No command for 0x${_opcode1.toHex()}");
             }
@@ -136,23 +136,21 @@ class Cpu {
           }
           break;
 
-        case CpuState.EXT_OPCODE:
+        case CpuState.extOpcode:
           if (accessedMemory) {
             return;
           }
           accessedMemory = true;
           _opcode2 = _addressSpace.getByte(pc);
-          if (_currentOpcode == null) {
-            _currentOpcode = opcodes.EXT_COMMANDS[_opcode2];
-          }
+          _currentOpcode ??= opcodes.extCommands[_opcode2];
           if (_currentOpcode == null) {
             throw Exception("No command for %0xcb 0x${_opcode2.toHex()}");
           }
-          _state = CpuState.OPERAND;
+          _state = CpuState.operand;
           _registers.incrementPC();
           break;
 
-        case CpuState.OPERAND:
+        case CpuState.operand:
           while (_operandIndex < _currentOpcode!.operandLength) {
             if (accessedMemory) {
               return;
@@ -162,25 +160,25 @@ class Cpu {
             _registers.incrementPC();
           }
           ops = _currentOpcode!.ops;
-          _state = CpuState.RUNNING;
+          _state = CpuState.running;
           break;
 
-        case CpuState.RUNNING:
+        case CpuState.running:
           if (_opcode1 == 0x10) {
             if (_speedMode.onStop()) {
-              _state = CpuState.OPCODE;
+              _state = CpuState.opcode;
             } else {
-              _state = CpuState.STOPPED;
+              _state = CpuState.stopped;
               _display.disableLcd();
             }
             return;
           } else if (_opcode1 == 0x76) {
             if (_interruptManager.isHaltBug()) {
-              _state = CpuState.OPCODE;
+              _state = CpuState.opcode;
               _haltBugMode = true;
               return;
             } else {
-              _state = CpuState.HALTED;
+              _state = CpuState.halted;
               return;
             }
           }
@@ -216,15 +214,15 @@ class Cpu {
           }
 
           if (_opIndex >= ops!.length) {
-            _state = CpuState.OPCODE;
+            _state = CpuState.opcode;
             _operandIndex = 0;
             _interruptManager.onInstructionFinished();
             return;
           }
           break;
 
-        case CpuState.HALTED:
-        case CpuState.STOPPED:
+        case CpuState.halted:
+        case CpuState.stopped:
           return;
       }
     }
@@ -232,12 +230,12 @@ class Cpu {
 
   void _handleInterrupt() {
     switch (_state) {
-      case CpuState.IRQ_READ_IF:
+      case CpuState.irqReadIf:
         _interruptFlag = _addressSpace.getByte(0xff0f);
-        _state = CpuState.IRQ_READ_IE;
+        _state = CpuState.irqReadIe;
         break;
 
-      case CpuState.IRQ_READ_IE:
+      case CpuState.irqReadIe:
         _interruptEnabled = _addressSpace.getByte(0xffff);
         _requestedIrq = null;
         for (final irq in InterruptType.values) {
@@ -247,30 +245,30 @@ class Cpu {
           }
         }
         if (_requestedIrq == null) {
-          _state = CpuState.OPCODE;
+          _state = CpuState.opcode;
         } else {
-          _state = CpuState.IRQ_PUSH_1;
+          _state = CpuState.irqPush1;
           _interruptManager.clearInterrupt(_requestedIrq!);
           _interruptManager.disableInterrupts(false);
         }
         break;
 
-      case CpuState.IRQ_PUSH_1:
+      case CpuState.irqPush1:
         _registers.decrementSP();
         _addressSpace.setByte(_registers.sp, (_registers.pc & 0xff00) >> 8);
-        _state = CpuState.IRQ_PUSH_2;
+        _state = CpuState.irqPush2;
         break;
 
-      case CpuState.IRQ_PUSH_2:
+      case CpuState.irqPush2:
         _registers.decrementSP();
         _addressSpace.setByte(_registers.sp, _registers.pc & 0x00ff);
-        _state = CpuState.IRQ_JUMP;
+        _state = CpuState.irqJump;
         break;
 
-      case CpuState.IRQ_JUMP:
+      case CpuState.irqJump:
         _registers.pc = _requestedIrq!.handler;
         _requestedIrq = null;
-        _state = CpuState.OPCODE;
+        _state = CpuState.opcode;
         break;
     }
   }

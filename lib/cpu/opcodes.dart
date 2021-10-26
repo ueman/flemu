@@ -2,7 +2,7 @@ import 'package:gb_emulator/cpu/op_code/op_code.dart';
 import 'package:gb_emulator/cpu/op_code/op_code_builder.dart';
 import 'package:gb_emulator/int_x.dart';
 
-final List<Opcode> COMMANDS = () {
+final List<Opcode> commands = () {
   List<OpcodeBuilder?> opcodes = List.generate(
       256, (index) => null); // should not have more than 256 elements
 
@@ -271,7 +271,7 @@ final List<Opcode> COMMANDS = () {
   return List<Opcode>.unmodifiable(commands);
 }();
 
-final List<Opcode> EXT_COMMANDS = () {
+final List<Opcode> extCommands = () {
   List<OpcodeBuilder?> extOpcodes = List.generate(0x100, (index) => null);
 
   for (final o in indexedList(

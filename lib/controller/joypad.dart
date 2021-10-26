@@ -4,7 +4,7 @@ import 'package:gb_emulator/controller/controller.dart';
 import 'package:gb_emulator/cpu/interrupt_manager.dart';
 
 class Joypad implements AddressSpace {
-  Set<Button> _buttons = {};
+  final Set<Button> _buttons = {};
 
   int _p1 = 0;
 

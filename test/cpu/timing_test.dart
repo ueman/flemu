@@ -34,7 +34,7 @@ void main() {
         opcode = cpu.getCurrentOpcode();
       }
       ticks++;
-    } while (cpu.getState() != CpuState.OPCODE || ticks < 4);
+    } while (cpu.getState() != CpuState.opcode || ticks < 4);
 
     if (opcode == null) {
       expect(
