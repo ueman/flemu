@@ -3,19 +3,19 @@ import 'package:gb_emulator/gpu/gpu.dart';
 import 'package:gb_emulator/memory/ram.dart';
 
 class Hdma implements AddressSpace {
-  static const int HDMA1 = 0xff51;
+  static const int hdma1 = 0xff51;
 
-  static const int HDMA2 = 0xff52;
+  static const int hdma2 = 0xff52;
 
-  static const int HDMA3 = 0xff53;
+  static const int hdma3 = 0xff53;
 
-  static const int HDMA4 = 0xff54;
+  static const int hdma4 = 0xff54;
 
-  static const int HDMA5 = 0xff55;
+  static const int hdma5 = 0xff55;
 
   final AddressSpace _addressSpace;
 
-  final Ram hdma1234 = Ram(HDMA1, 4);
+  final Ram hdma1234 = Ram(hdma1, 4);
 
   GpuMode? _gpuMode;
 
@@ -37,7 +37,7 @@ class Hdma implements AddressSpace {
 
   @override
   bool accepts(int address) {
-    return address >= HDMA1 && address <= HDMA5;
+    return address >= hdma1 && address <= hdma5;
   }
 
   void tick() {
@@ -64,7 +64,7 @@ class Hdma implements AddressSpace {
   void setByte(int address, int value) {
     if (hdma1234.accepts(address)) {
       hdma1234.setByte(address, value);
-    } else if (address == HDMA5) {
+    } else if (address == hdma5) {
       if (_transferInProgress && (address & (1 << 7)) == 0) {
         _stopTransfer();
       } else {
@@ -77,7 +77,7 @@ class Hdma implements AddressSpace {
   int getByte(int address) {
     if (hdma1234.accepts(address)) {
       return 0xff;
-    } else if (address == HDMA5) {
+    } else if (address == hdma5) {
       return (_transferInProgress ? 0 : (1 << 7)) | _length;
     } else {
       throw Exception('IllegalArgument');
@@ -109,9 +109,9 @@ class Hdma implements AddressSpace {
     _hblankTransfer = (reg & (1 << 7)) != 0;
     _length = reg & 0x7f;
 
-    _src = (hdma1234.getByte(HDMA1) << 8) | (hdma1234.getByte(HDMA2) & 0xf0);
-    _dst = ((hdma1234.getByte(HDMA3) & 0x1f) << 8) |
-        (hdma1234.getByte(HDMA4) & 0xf0);
+    _src = (hdma1234.getByte(hdma1) << 8) | (hdma1234.getByte(hdma2) & 0xf0);
+    _dst = ((hdma1234.getByte(hdma3) & 0x1f) << 8) |
+        (hdma1234.getByte(hdma4) & 0xf0);
     _src = _src & 0xfff0;
     _dst = (_dst & 0x1fff) | 0x8000;
 

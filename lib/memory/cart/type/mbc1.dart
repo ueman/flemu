@@ -174,8 +174,8 @@ class Mbc1 implements AddressSpace {
     int logoCount = 0;
     for (int i = 0; i < rom.length; i += 0x4000) {
       bool logoMatches = true;
-      for (int j = 0; j < NINTENDO_LOGO.length; j++) {
-        if (rom[i + 0x104 + j] != NINTENDO_LOGO[j]) {
+      for (int j = 0; j < nintendoLogo.length; j++) {
+        if (rom[i + 0x104 + j] != nintendoLogo[j]) {
           logoMatches = false;
           break;
         }
@@ -187,7 +187,7 @@ class Mbc1 implements AddressSpace {
     return logoCount > 1;
   }
 
-  static const List<int> NINTENDO_LOGO = [
+  static const List<int> nintendoLogo = [
     0xCE,
     0xED,
     0x66,

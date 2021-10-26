@@ -49,11 +49,6 @@ class SoundMode2 extends AbstractSoundMode {
   }
 
   @override
-  void setNr0(int value) {
-    super.setNr0(value);
-  }
-
-  @override
   void setNr1(int value) {
     super.setNr1(value);
     length.setLength(64 - (value & 63 /* 0b00111111 */));

@@ -19,7 +19,7 @@ class SoundMode3 extends AbstractSoundMode {
   bool _triggered = false;
 
   SoundMode3(bool gbc) : super(0xff1a, 256, gbc) {
-    for (int v in gbc ? CGB_WAVE : DMG_WAVE) {
+    for (int v in gbc ? cgbWave : dmgWave) {
       _waveRam.setByte(0xff30, v);
     }
   }
@@ -69,11 +69,6 @@ class SoundMode3 extends AbstractSoundMode {
   void setNr1(int value) {
     super.setNr1(value);
     length.setLength(256 - value);
-  }
-
-  @override
-  void setNr3(int value) {
-    super.setNr3(value);
   }
 
   @override
@@ -175,7 +170,7 @@ class SoundMode3 extends AbstractSoundMode {
   }
 }
 
-const DMG_WAVE = [
+const dmgWave = [
   0x84,
   0x40,
   0x43,
@@ -194,7 +189,7 @@ const DMG_WAVE = [
   0xda
 ];
 
-const CGB_WAVE = [
+const cgbWave = [
   0x00,
   0xff,
   0x00,

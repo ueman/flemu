@@ -115,7 +115,7 @@ class Sound implements AddressSpace {
     } else {
       result = _getUnmaskedByte(address);
     }
-    return result | MASKS[address - 0xff10];
+    return result | masks[address - 0xff10];
   }
 
   int _getUnmaskedByte(int address) {
@@ -157,7 +157,7 @@ class Sound implements AddressSpace {
   }
 }
 
-const MASKS = [
+const masks = [
   0x80,
   0x3f,
   0x00,

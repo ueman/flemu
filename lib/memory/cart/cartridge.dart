@@ -14,18 +14,18 @@ import 'package:gb_emulator/memory/cart/type/rom.dart';
 import 'package:path/path.dart';
 
 enum GameboyTypeFlag {
-  UNIVERSAL,
-  CGB,
-  NON_CGB,
+  universal,
+  cgb,
+  nonCgb,
 }
 
 GameboyTypeFlag getFlag(int value) {
   if (value == 0x80) {
-    return GameboyTypeFlag.UNIVERSAL;
+    return GameboyTypeFlag.universal;
   } else if (value == 0xc0) {
-    return GameboyTypeFlag.CGB;
+    return GameboyTypeFlag.cgb;
   } else {
-    return GameboyTypeFlag.NON_CGB;
+    return GameboyTypeFlag.nonCgb;
   }
 }
 
@@ -77,9 +77,9 @@ class Cartridge implements AddressSpace {
     _dmgBoostrap = options.useBootstrap ? 0 : 1;
     if (options.forceCgb) {
       _gbc = true;
-    } else if (_gameboyType == GameboyTypeFlag.NON_CGB) {
+    } else if (_gameboyType == GameboyTypeFlag.nonCgb) {
       _gbc = false;
-    } else if (_gameboyType == GameboyTypeFlag.CGB) {
+    } else if (_gameboyType == GameboyTypeFlag.cgb) {
       _gbc = true;
     } else {
       // UNIVERSAL

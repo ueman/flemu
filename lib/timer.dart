@@ -7,7 +7,7 @@ class Timer implements AddressSpace {
 
   final InterruptManager interruptManager;
 
-  static final List<int> FREQ_TO_BIT = [9, 3, 5, 7];
+  static final List<int> freqToBit = [9, 3, 5, 7];
 
   int div = 0;
   int tac = 0;
@@ -50,8 +50,8 @@ class Timer implements AddressSpace {
   }
 
   void updateDiv(int newDiv) {
-    this.div = newDiv;
-    int bitPos = FREQ_TO_BIT[tac & 3]; // 3 == 0b11
+    div = newDiv;
+    int bitPos = freqToBit[tac & 3]; // 3 == 0b11
     bitPos <<= speedMode.getSpeedMode() - 1;
     var bit = (div & (1 << bitPos)) != 0;
     bit &= (tac & (1 << 2)) != 0;

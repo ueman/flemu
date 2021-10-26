@@ -1,7 +1,7 @@
 import 'package:gb_emulator/gameboy.dart';
 
 class FrequencySweep {
-  static const int _DIVIDER = ticksPerSecond ~/ 128;
+  static const int _divider = ticksPerSecond ~/ 128;
 
   // sweep parameters
   int _period = 0;
@@ -72,7 +72,7 @@ class FrequencySweep {
   }
 
   void tick() {
-    if (++_i == _DIVIDER) {
+    if (++_i == _divider) {
       _i = 0;
       if (!_counterEnabled) {
         return;

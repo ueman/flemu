@@ -1,7 +1,7 @@
 import 'package:gb_emulator/gameboy.dart';
 
 class LengthCounter {
-  static const int _DIVIDER = ticksPerSecond ~/ 256;
+  static const int _divider = ticksPerSecond ~/ 256;
 
   final int _fullLength;
 
@@ -18,7 +18,7 @@ class LengthCounter {
   }
 
   void tick() {
-    if (++_i == _DIVIDER) {
+    if (++_i == _divider) {
       _i = 0;
       if (_enabled && _length > 0) {
         _length--;
@@ -40,17 +40,17 @@ class LengthCounter {
 
     if (_enabled) {
       if (_length == 0 && trigger) {
-        if (enable && _i < _DIVIDER / 2) {
+        if (enable && _i < _divider / 2) {
           setLength(_fullLength - 1);
         } else {
           setLength(_fullLength);
         }
       }
     } else if (enable) {
-      if (_length > 0 && _i < _DIVIDER / 2) {
+      if (_length > 0 && _i < _divider / 2) {
         _length--;
       }
-      if (_length == 0 && trigger && _i < _DIVIDER / 2) {
+      if (_length == 0 && trigger && _i < _divider / 2) {
         setLength(_fullLength - 1);
       }
     } else {
