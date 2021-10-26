@@ -1,0 +1,3 @@
+class CommandPattern {}
+
+class ParsedCommandLine {}
