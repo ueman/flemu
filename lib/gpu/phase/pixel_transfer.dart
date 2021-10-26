@@ -73,15 +73,15 @@ class PixelTransfer implements GpuPhase {
       if (_fifo.getLength() <= 8) {
         return true;
       }
-      if (_droppedPixels < _r.get(const GpuRegister.SCX()) % 8) {
+      if (_droppedPixels < _r.get(const GpuRegister.scx()) % 8) {
         _fifo.dropPixel();
         _droppedPixels++;
         return true;
       }
       if (!_window &&
           _lcdc.isWindowDisplay() &&
-          _r.get(const GpuRegister.LY()) >= _r.get(const GpuRegister.WY()) &&
-          _x == _r.get(const GpuRegister.WX()) - 7) {
+          _r.get(const GpuRegister.ly()) >= _r.get(const GpuRegister.wy()) &&
+          _x == _r.get(const GpuRegister.wx()) - 7) {
         _window = true;
         _startFetchingWindow();
         return true;
@@ -125,9 +125,9 @@ class PixelTransfer implements GpuPhase {
   }
 
   void _startFetchingBackground() {
-    int bgX = _r.get(const GpuRegister.SCX()) ~/ 0x08;
+    int bgX = _r.get(const GpuRegister.scx()) ~/ 0x08;
     int bgY =
-        (_r.get(const GpuRegister.SCY()) + _r.get(const GpuRegister.LY())) %
+        (_r.get(const GpuRegister.scy()) + _r.get(const GpuRegister.ly())) %
             0x100;
 
     _fetcher.startFetching(
@@ -139,8 +139,8 @@ class PixelTransfer implements GpuPhase {
   }
 
   void _startFetchingWindow() {
-    int winX = (_x - _r.get(const GpuRegister.WX()) + 7) ~/ 0x08;
-    int winY = _r.get(const GpuRegister.LY()) - _r.get(const GpuRegister.WY());
+    int winX = (_x - _r.get(const GpuRegister.wx()) + 7) ~/ 0x08;
+    int winY = _r.get(const GpuRegister.ly()) - _r.get(const GpuRegister.wy());
 
     _fetcher.startFetching(
         _lcdc.getWindowTileMapDisplay() + (winY ~/ 0x08) * 0x20,

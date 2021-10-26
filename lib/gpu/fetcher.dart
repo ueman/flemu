@@ -8,15 +8,15 @@ import 'package:gb_emulator/gpu/tile_attributes.dart';
 import 'package:gb_emulator/memory/memory_registers.dart';
 
 enum _State {
-  READ_TILE_ID,
-  READ_DATA_1,
-  READ_DATA_2,
-  PUSH,
-  READ_SPRITE_TILE_ID,
-  READ_SPRITE_FLAGS,
-  READ_SPRITE_DATA_1,
-  READ_SPRITE_DATA_2,
-  PUSH_SPRITE,
+  readTileId,
+  readData1,
+  readData2,
+  push,
+  readSpriteTileId,
+  readSpriteFlags,
+  readSpriteData1,
+  readSpriteData2,
+  pushSprite,
 }
 
 class Fetcher {
@@ -83,7 +83,7 @@ class Fetcher {
   int _divider = 2;
 
   void init() {
-    state = _State.READ_TILE_ID;
+    state = _State.readTileId;
     _tileId = 0;
     _tileData1 = 0;
     _tileData2 = 0;
@@ -105,7 +105,7 @@ class Fetcher {
     _tileLine = tileLine;
     _fifo.clear();
 
-    state = _State.READ_TILE_ID;
+    state = _State.readTileId;
     _tileId = 0;
     _tileData1 = 0;
     _tileData2 = 0;
@@ -118,14 +118,14 @@ class Fetcher {
 
   void addSprite(SpritePosition sprite, int offset, int oamIndex) {
     sprite = sprite;
-    state = _State.READ_SPRITE_TILE_ID;
-    _spriteTileLine = _r.get(const GpuRegister.LY()) + 16 - sprite.y;
+    state = _State.readSpriteTileId;
+    _spriteTileLine = _r.get(const GpuRegister.ly()) + 16 - sprite.y;
     _spriteOffset = offset;
     _spriteOamIndex = oamIndex;
   }
 
   void tick() {
-    if (_fetchingDisabled && state == _State.READ_TILE_ID) {
+    if (_fetchingDisabled && state == _State.readTileId) {
       if (_fifo.getLength() <= 8) {
         _fifo.enqueue8Pixels(emptyPixelLine, _tileAttributes);
       }
@@ -139,7 +139,7 @@ class Fetcher {
     }
 
     switch (state) {
-      case _State.READ_TILE_ID:
+      case _State.readTileId:
         _tileId = _videoRam0.getByte(_mapAddress + _xOffset);
         if (_gbc) {
           _tileAttributes = TileAttributes.valueOf(
@@ -148,65 +148,65 @@ class Fetcher {
         } else {
           _tileAttributes = TileAttributes.empty;
         }
-        state = _State.READ_DATA_1;
+        state = _State.readData1;
         break;
 
-      case _State.READ_DATA_1:
+      case _State.readData1:
         _tileData1 = _getTileData(_tileId, _tileLine, 0, _tileDataAddress,
             _tileIdSigned, _tileAttributes, 8);
-        state = _State.READ_DATA_2;
+        state = _State.readData2;
         break;
 
-      case _State.READ_DATA_2:
+      case _State.readData2:
         _tileData2 = _getTileData(_tileId, _tileLine, 1, _tileDataAddress,
             _tileIdSigned, _tileAttributes, 8);
-        state = _State.PUSH;
+        state = _State.push;
         continue statePush;
 
       statePush:
-      case _State.PUSH:
+      case _State.push:
         if (_fifo.getLength() <= 8) {
           _fifo.enqueue8Pixels(
               zip(_tileData1, _tileData2, _tileAttributes.isXflip()),
               _tileAttributes);
           _xOffset = (_xOffset + 1) % 0x20;
-          state = _State.READ_TILE_ID;
+          state = _State.readTileId;
         }
         break;
 
-      case _State.READ_SPRITE_TILE_ID:
+      case _State.readSpriteTileId:
         _tileId = _oemRam.getByte(_sprite.address + 2);
-        state = _State.READ_SPRITE_FLAGS;
+        state = _State.readSpriteFlags;
         break;
 
-      case _State.READ_SPRITE_FLAGS:
+      case _State.readSpriteFlags:
         _spriteAttributes =
             TileAttributes.valueOf(_oemRam.getByte(_sprite.address + 3));
-        state = _State.READ_SPRITE_DATA_1;
+        state = _State.readSpriteData1;
         break;
 
-      case _State.READ_SPRITE_DATA_1:
+      case _State.readSpriteData1:
         if (_lcdc.getSpriteHeight() == 16) {
           _tileId &= 0xfe;
         }
         _tileData1 = _getTileData(_tileId, _spriteTileLine, 0, 0x8000, false,
             _spriteAttributes, _lcdc.getSpriteHeight());
-        state = _State.READ_SPRITE_DATA_2;
+        state = _State.readSpriteData2;
         break;
 
-      case _State.READ_SPRITE_DATA_2:
+      case _State.readSpriteData2:
         _tileData2 = _getTileData(_tileId, _spriteTileLine, 1, 0x8000, false,
             _spriteAttributes, _lcdc.getSpriteHeight());
-        state = _State.PUSH_SPRITE;
+        state = _State.pushSprite;
         break;
 
-      case _State.PUSH_SPRITE:
+      case _State.pushSprite:
         _fifo.setOverlay(
             zip(_tileData1, _tileData2, _spriteAttributes.isXflip()),
             _spriteOffset,
             _spriteAttributes,
             _spriteOamIndex);
-        state = _State.READ_TILE_ID;
+        state = _State.readTileId;
         break;
     }
   }
@@ -233,11 +233,11 @@ class Fetcher {
 
   bool spriteInProgress() {
     return {
-      _State.READ_SPRITE_TILE_ID,
-      _State.READ_SPRITE_FLAGS,
-      _State.READ_SPRITE_DATA_1,
-      _State.READ_SPRITE_DATA_2,
-      _State.PUSH_SPRITE,
+      _State.readSpriteTileId,
+      _State.readSpriteFlags,
+      _State.readSpriteData1,
+      _State.readSpriteData2,
+      _State.pushSprite,
     }.contains(state);
   }
 

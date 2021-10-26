@@ -125,7 +125,7 @@ class Gameboy {
         lcdDisabled = true;
         _display.requestRefresh();
         _hdma.onLcdSwitch(false);
-      } else if (newMode == GpuMode.VBlank) {
+      } else if (newMode == GpuMode.vBlank) {
         requestedScreenRefresh = true;
         _display.requestRefresh();
       }
@@ -134,7 +134,7 @@ class Gameboy {
         lcdDisabled = false;
         _display.waitForRefresh();
         _hdma.onLcdSwitch(true);
-      } else if (requestedScreenRefresh && newMode == GpuMode.OamSearch) {
+      } else if (requestedScreenRefresh && newMode == GpuMode.oamSearch) {
         requestedScreenRefresh = false;
         _display.waitForRefresh();
       }

@@ -277,8 +277,8 @@ class Cpu {
     if (!(_gpu?.lcdc.isLcdEnabled() ?? false)) {
       return;
     }
-    int stat = _addressSpace.getByte(const GpuRegister.STAT().getAddress());
-    if ((stat & 3 /* 0b11 */) == GpuMode.OamSearch.index &&
+    int stat = _addressSpace.getByte(const GpuRegister.stat().getAddress());
+    if ((stat & 3 /* 0b11 */) == GpuMode.oamSearch.index &&
         (_gpu?.getTicksInLine() ?? 0) < 79) {
       SpriteBug.corruptOam(_addressSpace, type, _gpu?.getTicksInLine() ?? 0);
     }

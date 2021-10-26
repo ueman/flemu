@@ -12,7 +12,7 @@ void main() {
 
   setUp(() {
     MemoryRegisters r = MemoryRegisters(GpuRegister.values);
-    r.put(const GpuRegister.BGP(), 228); // 0b11100100
+    r.put(const GpuRegister.bgp(), 228); // 0b11100100
     fifo = DmgPixelFifo(NullDisplay(), Lcdc(), r);
   });
 

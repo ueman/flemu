@@ -35,8 +35,8 @@ class TileAttributes {
 
   GpuRegister getDmgPalette() {
     return (_value & (1 << 4)) == 0
-        ? const GpuRegister.OBP0()
-        : const GpuRegister.OBP1();
+        ? const GpuRegister.obp0()
+        : const GpuRegister.obp1();
   }
 
   int getBank() {

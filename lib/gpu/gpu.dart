@@ -14,10 +14,10 @@ import 'package:gb_emulator/memory/memory_registers.dart';
 import 'package:gb_emulator/memory/ram.dart';
 
 enum GpuMode {
-  HBlank,
-  VBlank,
-  OamSearch,
-  PixelTransfer,
+  hBlank,
+  vBlank,
+  oamSearch,
+  pixelTransfer,
 }
 
 class Gpu implements AddressSpace {
@@ -60,7 +60,7 @@ class Gpu implements AddressSpace {
 
   int _lcdEnabledDelay = 0;
 
-  MemoryRegisters _r = MemoryRegisters(GpuRegister.values);
+  final MemoryRegisters _r = MemoryRegisters(GpuRegister.values);
 
   int _ticksInLine = 0;
 
@@ -75,7 +75,7 @@ class Gpu implements AddressSpace {
     }
     _oamPalette.fillWithFF();
 
-    _mode = GpuMode.OamSearch;
+    _mode = GpuMode.oamSearch;
     _phase = _oamSearchPhase.start();
   }
 
@@ -100,7 +100,7 @@ class Gpu implements AddressSpace {
   }
 
   AddressSpace? _getVideoRam() {
-    if (gbc && (_r.get(const GpuRegister.VBK()) & 1) == 1) {
+    if (gbc && (_r.get(const GpuRegister.vbk()) & 1) == 1) {
       return _videoRam1;
     } else {
       return _videoRam0;
@@ -122,7 +122,7 @@ class Gpu implements AddressSpace {
 
   @override
   void setByte(int address, int value) {
-    if (address == const GpuRegister.STAT().getAddress()) {
+    if (address == const GpuRegister.stat().getAddress()) {
       _setStat(value);
     } else {
       AddressSpace? space = _getAddressSpace(address);
@@ -136,13 +136,13 @@ class Gpu implements AddressSpace {
 
   @override
   int getByte(int address) {
-    if (address == const GpuRegister.STAT().getAddress()) {
+    if (address == const GpuRegister.stat().getAddress()) {
       return _getStat();
     } else {
       AddressSpace? space = _getAddressSpace(address);
       if (space == null) {
         return 0xff;
-      } else if (address == const GpuRegister.VBK().getAddress()) {
+      } else if (address == const GpuRegister.vbk().getAddress()) {
         return gbc ? 0xfe : 0xff;
       } else {
         return space.getByte(address);
@@ -168,44 +168,44 @@ class Gpu implements AddressSpace {
     if (_phase.tick()) {
       // switch line 153 to 0
       if (_ticksInLine == 4 &&
-          _mode == GpuMode.VBlank &&
-          _r.get(const GpuRegister.LY()) == 153) {
-        _r.put(const GpuRegister.LY(), 0);
+          _mode == GpuMode.vBlank &&
+          _r.get(const GpuRegister.ly()) == 153) {
+        _r.put(const GpuRegister.ly(), 0);
         _requestLycEqualsLyInterrupt();
       }
     } else {
       switch (oldMode) {
-        case GpuMode.OamSearch:
-          _mode = GpuMode.PixelTransfer;
+        case GpuMode.oamSearch:
+          _mode = GpuMode.pixelTransfer;
           _phase = _pixelTransferPhase.start(_oamSearchPhase.sprites);
           break;
 
-        case GpuMode.PixelTransfer:
-          _mode = GpuMode.HBlank;
+        case GpuMode.pixelTransfer:
+          _mode = GpuMode.hBlank;
           _phase = _hBlankPhase.start(_ticksInLine);
           _requestLcdcInterrupt(3);
           break;
 
-        case GpuMode.HBlank:
+        case GpuMode.hBlank:
           _ticksInLine = 0;
-          if (_r.preIncrement(const GpuRegister.LY()) == 144) {
-            _mode = GpuMode.VBlank;
+          if (_r.preIncrement(const GpuRegister.ly()) == 144) {
+            _mode = GpuMode.vBlank;
             _phase = _vBlankPhase.start();
             _interruptManager.requestInterrupt(const InterruptType.vBlank());
             _requestLcdcInterrupt(4);
           } else {
-            _mode = GpuMode.OamSearch;
+            _mode = GpuMode.oamSearch;
             _phase = _oamSearchPhase.start();
           }
           _requestLcdcInterrupt(5);
           _requestLycEqualsLyInterrupt();
           break;
 
-        case GpuMode.VBlank:
+        case GpuMode.vBlank:
           _ticksInLine = 0;
-          if (_r.preIncrement(const GpuRegister.LY()) == 1) {
-            _mode = GpuMode.OamSearch;
-            _r.put(const GpuRegister.LY(), 0);
+          if (_r.preIncrement(const GpuRegister.ly()) == 1) {
+            _mode = GpuMode.oamSearch;
+            _r.put(const GpuRegister.ly(), 0);
             _phase = _oamSearchPhase.start();
             _requestLcdcInterrupt(5);
           } else {
@@ -227,28 +227,28 @@ class Gpu implements AddressSpace {
   }
 
   void _requestLcdcInterrupt(int statBit) {
-    if ((_r.get(const GpuRegister.STAT()) & (1 << statBit)) != 0) {
+    if ((_r.get(const GpuRegister.stat()) & (1 << statBit)) != 0) {
       _interruptManager.requestInterrupt(const InterruptType.lcdc());
     }
   }
 
   void _requestLycEqualsLyInterrupt() {
-    if (_r.get(const GpuRegister.LYC()) == _r.get(const GpuRegister.LY())) {
+    if (_r.get(const GpuRegister.lyc()) == _r.get(const GpuRegister.ly())) {
       _requestLcdcInterrupt(6);
     }
   }
 
   int _getStat() {
-    return _r.get(const GpuRegister.STAT()) |
+    return _r.get(const GpuRegister.stat()) |
         _mode.index |
-        (_r.get(const GpuRegister.LYC()) == _r.get(const GpuRegister.LY())
+        (_r.get(const GpuRegister.lyc()) == _r.get(const GpuRegister.ly())
             ? (1 << 2)
             : 0) |
         0x80;
   }
 
   void _setStat(int value) {
-    _r.put(const GpuRegister.STAT(),
+    _r.put(const GpuRegister.stat(),
         value & 248 /* 0b11111000 */); // last three bits are read-only
   }
 
@@ -262,10 +262,10 @@ class Gpu implements AddressSpace {
   }
 
   void _disableLcd() {
-    _r.put(const GpuRegister.LY(), 0);
+    _r.put(const GpuRegister.ly(), 0);
     _ticksInLine = 0;
     _phase = _hBlankPhase.start(250);
-    _mode = GpuMode.HBlank;
+    _mode = GpuMode.hBlank;
     lcdEnabled = false;
     _lcdEnabledDelay = -1;
     _display.disableLcd();

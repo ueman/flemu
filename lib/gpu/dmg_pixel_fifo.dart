@@ -45,7 +45,7 @@ class DmgPixelFifo implements PixelFifo {
   void enqueue8Pixels(List<int> pixelLine, TileAttributes tileAttributes) {
     for (int p in pixelLine) {
       _pixels.enqueue(p);
-      _palettes.enqueue(_registers.get(const GpuRegister.BGP()));
+      _palettes.enqueue(_registers.get(const GpuRegister.bgp()));
       _pixelType.enqueue(0);
     }
   }

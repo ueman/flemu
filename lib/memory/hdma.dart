@@ -96,7 +96,7 @@ class Hdma implements AddressSpace {
     if (!_transferInProgress) {
       return false;
     } else if (_hblankTransfer &&
-        (_gpuMode == GpuMode.HBlank || !_lcdEnabled)) {
+        (_gpuMode == GpuMode.hBlank || !_lcdEnabled)) {
       return true;
     } else if (!_hblankTransfer) {
       return true;

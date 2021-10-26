@@ -1,37 +1,37 @@
 import 'package:gb_emulator/memory/memory_registers.dart';
 
 class GpuRegister implements Register {
-  const GpuRegister.STAT()
+  const GpuRegister.stat()
       : address = 0xff41,
         type = const RegisterType.rw();
-  const GpuRegister.SCY()
+  const GpuRegister.scy()
       : address = 0xff42,
         type = const RegisterType.rw();
-  const GpuRegister.SCX()
+  const GpuRegister.scx()
       : address = 0xff43,
         type = const RegisterType.rw();
-  const GpuRegister.LY()
+  const GpuRegister.ly()
       : address = 0xff44,
         type = const RegisterType.r();
-  const GpuRegister.LYC()
+  const GpuRegister.lyc()
       : address = 0xff45,
         type = const RegisterType.rw();
-  const GpuRegister.BGP()
+  const GpuRegister.bgp()
       : address = 0xff47,
         type = const RegisterType.rw();
-  const GpuRegister.OBP0()
+  const GpuRegister.obp0()
       : address = 0xff48,
         type = const RegisterType.rw();
-  const GpuRegister.OBP1()
+  const GpuRegister.obp1()
       : address = 0xff49,
         type = const RegisterType.rw();
-  const GpuRegister.WY()
+  const GpuRegister.wy()
       : address = 0xff4a,
         type = const RegisterType.rw();
-  const GpuRegister.WX()
+  const GpuRegister.wx()
       : address = 0xff4b,
         type = const RegisterType.rw();
-  const GpuRegister.VBK()
+  const GpuRegister.vbk()
       : address = 0xff4f,
         type = const RegisterType.w();
 
@@ -50,16 +50,16 @@ class GpuRegister implements Register {
   }
 
   static const values = [
-    GpuRegister.STAT(),
-    GpuRegister.SCY(),
-    GpuRegister.SCX(),
-    GpuRegister.LY(),
-    GpuRegister.LYC(),
-    GpuRegister.BGP(),
-    GpuRegister.OBP0(),
-    GpuRegister.OBP1(),
-    GpuRegister.WY(),
-    GpuRegister.WX(),
-    GpuRegister.VBK(),
+    GpuRegister.stat(),
+    GpuRegister.scy(),
+    GpuRegister.scx(),
+    GpuRegister.ly(),
+    GpuRegister.lyc(),
+    GpuRegister.bgp(),
+    GpuRegister.obp0(),
+    GpuRegister.obp1(),
+    GpuRegister.wy(),
+    GpuRegister.wx(),
+    GpuRegister.vbk(),
   ];
 }

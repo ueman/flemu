@@ -137,7 +137,7 @@ class OpcodeBuilder {
         return context;
       },
       causesOemBug: (registers, int context) {
-        return inOamArea(registers.sp) ? CorruptionType.PUSH_1 : null;
+        return inOamArea(registers.sp) ? CorruptionType.push1 : null;
       },
       description: "[_ ] → (SP--)",
     ));
@@ -149,7 +149,7 @@ class OpcodeBuilder {
         return context;
       },
       causesOemBug: (registers, int context) {
-        return inOamArea(registers.sp) ? CorruptionType.PUSH_2 : null;
+        return inOamArea(registers.sp) ? CorruptionType.push2 : null;
       },
       description: "[ _] → (SP--)",
     ));
@@ -167,7 +167,7 @@ class OpcodeBuilder {
         return lsb;
       },
       causesOemBug: (registers, int context) {
-        return inOamArea(registers.sp) ? CorruptionType.POP_1 : null;
+        return inOamArea(registers.sp) ? CorruptionType.pop1 : null;
       },
       description: "(SP++) → [ _]",
     ));
@@ -179,7 +179,7 @@ class OpcodeBuilder {
         return context | (msb << 8);
       },
       causesOemBug: (registers, int context) {
-        return inOamArea(registers.sp) ? CorruptionType.POP_2 : null;
+        return inOamArea(registers.sp) ? CorruptionType.pop2 : null;
       },
       description: "(SP++) → [_ ]",
     ));
@@ -236,7 +236,7 @@ class OpcodeBuilder {
       },
       causesOemBug: (registers, int context) {
         return OpcodeBuilder.causesOemBug(func, context)
-            ? CorruptionType.INC_DEC
+            ? CorruptionType.incDec
             : null;
       },
       description: () {
@@ -261,7 +261,7 @@ class OpcodeBuilder {
       },
       causesOemBug: (registers, int context) {
         return OpcodeBuilder.causesOemBug(func, context)
-            ? CorruptionType.LD_HL
+            ? CorruptionType.ldHl
             : null;
       },
       description: "%s(HL) → [__]",

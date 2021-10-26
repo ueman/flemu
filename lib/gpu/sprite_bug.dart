@@ -1,12 +1,12 @@
 import 'package:gb_emulator/address_space.dart';
 
 enum CorruptionType {
-  INC_DEC,
-  POP_1,
-  POP_2,
-  PUSH_1,
-  PUSH_2,
-  LD_HL,
+  incDec,
+  pop1,
+  pop2,
+  push1,
+  push2,
+  ldHl,
 }
 
 class SpriteBug {
@@ -14,14 +14,14 @@ class SpriteBug {
       AddressSpace addressSpace, CorruptionType type, int ticksInLine) {
     int cpuCycle = (ticksInLine + 1) ~/ 4 + 1;
     switch (type) {
-      case CorruptionType.INC_DEC:
+      case CorruptionType.incDec:
         if (cpuCycle >= 2) {
           _copyValues(
               addressSpace, (cpuCycle - 2) * 8 + 2, (cpuCycle - 1) * 8 + 2, 6);
         }
         break;
 
-      case CorruptionType.POP_1:
+      case CorruptionType.pop1:
         if (cpuCycle >= 4) {
           _copyValues(
               addressSpace, (cpuCycle - 3) * 8 + 2, (cpuCycle - 4) * 8 + 2, 8);
@@ -32,14 +32,14 @@ class SpriteBug {
         }
         break;
 
-      case CorruptionType.POP_2:
+      case CorruptionType.pop2:
         if (cpuCycle >= 5) {
           _copyValues(
               addressSpace, (cpuCycle - 5) * 8 + 0, (cpuCycle - 2) * 8 + 0, 8);
         }
         break;
 
-      case CorruptionType.PUSH_1:
+      case CorruptionType.push1:
         if (cpuCycle >= 4) {
           _copyValues(
               addressSpace, (cpuCycle - 4) * 8 + 2, (cpuCycle - 3) * 8 + 2, 8);
@@ -48,14 +48,14 @@ class SpriteBug {
         }
         break;
 
-      case CorruptionType.PUSH_2:
+      case CorruptionType.push2:
         if (cpuCycle >= 5) {
           _copyValues(
               addressSpace, (cpuCycle - 4) * 8 + 2, (cpuCycle - 3) * 8 + 2, 8);
         }
         break;
 
-      case CorruptionType.LD_HL:
+      case CorruptionType.ldHl:
         if (cpuCycle >= 4) {
           _copyValues(
               addressSpace, (cpuCycle - 3) * 8 + 2, (cpuCycle - 4) * 8 + 2, 8);

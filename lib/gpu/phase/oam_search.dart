@@ -5,8 +5,8 @@ import 'package:gb_emulator/gpu/phase/gpu_phase.dart';
 import 'package:gb_emulator/memory/memory_registers.dart';
 
 enum _State {
-  READING_Y,
-  READING_X,
+  readingY,
+  readingX,
 }
 
 class SpritePosition {
@@ -30,7 +30,7 @@ class OamSearch implements GpuPhase {
 
   int _spritePosIndex = 0;
 
-  _State _state = _State.READING_Y;
+  _State _state = _State.readingY;
 
   int _spriteY = 0;
 
@@ -42,7 +42,7 @@ class OamSearch implements GpuPhase {
 
   OamSearch start() {
     _spritePosIndex = 0;
-    _state = _State.READING_Y;
+    _state = _State.readingY;
     _spriteY = 0;
     _spriteX = 0;
     _i = 0;
@@ -56,21 +56,21 @@ class OamSearch implements GpuPhase {
   bool tick() {
     int spriteAddress = 0xfe00 + 4 * _i;
     switch (_state) {
-      case _State.READING_Y:
+      case _State.readingY:
         _spriteY = _oemRam.getByte(spriteAddress);
-        _state = _State.READING_X;
+        _state = _State.readingX;
         break;
 
-      case _State.READING_X:
+      case _State.readingX:
         _spriteX = _oemRam.getByte(spriteAddress + 1);
         if (_spritePosIndex < sprites.length &&
-            _between(_spriteY, _registers.get(const GpuRegister.LY()) + 16,
+            _between(_spriteY, _registers.get(const GpuRegister.ly()) + 16,
                 _spriteY + _lcdc.getSpriteHeight())) {
           sprites[_spritePosIndex++] =
               SpritePosition(_spriteX, _spriteY, spriteAddress);
         }
         _i++;
-        _state = _State.READING_Y;
+        _state = _State.readingY;
         break;
     }
     return _i < 40;
